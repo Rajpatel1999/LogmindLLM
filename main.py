@@ -1,6 +1,6 @@
-import torch
-
+from data.dataset import TextDataset
 from models.gpt_model import GPTModel
+from training.train import train
 from utils.tokenizer import CharTokenizer
 
 text = "API failed request API timeout error"
@@ -9,19 +9,16 @@ tokenizer = CharTokenizer()
 tokenizer.build_vocab(text)
 
 tokens = tokenizer.encode(text)
-seq_length = len(tokens)
-# Position indices are 0 .. seq_length - 1; table must be at least this long
-max_seq_length = max(64, seq_length)
+max_seq_length = max(64, len(tokens))
+seq_length = 16  # window length for TextDataset (input length; targets same length)
 
-x = torch.tensor(tokens, dtype=torch.long).unsqueeze(0)
+dataset = TextDataset(text, tokenizer, seq_length=seq_length)
 
 model = GPTModel(
     vocab_size=tokenizer.vocab_size,
-    embed_dim=16,
+    embed_dim=64,
     num_layers=2,
     max_seq_length=max_seq_length,
 )
 
-logits = model(x)
-
-print("Logits shape:", logits.shape)
+train(model, dataset, epochs=10, lr=1e-3)
