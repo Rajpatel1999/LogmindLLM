@@ -1,11 +1,12 @@
-from utils.tokenizer import SimpleTokenizer
+from utils.tokenizer import CharTokenizer
 
-text = "API failed request API timeout error"
+sample_corpus = "API failed request API timeout error"
 
-tokenizer = SimpleTokenizer()
-tokenizer.build_vocab(text)
+tokenizer = CharTokenizer()
+tokenizer.build_vocab(sample_corpus)
 
-encoded = tokenizer.encode("API failed request")
+sample_string = "API failed request"
+encoded = tokenizer.encode(sample_string)
 decoded = tokenizer.decode(encoded)
 
 print("Encoded:", encoded)
